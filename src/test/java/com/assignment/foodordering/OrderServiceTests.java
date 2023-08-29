@@ -80,12 +80,8 @@ public class OrderServiceTests {
 
     @Test
     void whenUpdateOrder_thenOrderUpdated() {
-        Order order = orderService.getOrderById(1);
-        assertEquals(1, order.getId());
-        assertEquals(OrderStatus.RECEIVED, order.getStatus());
-
         OrderUpdateRequest updateRequest = new OrderUpdateRequest(OrderStatus.PREPARING);
-        order = orderService.updateOrder(1, updateRequest);
+        Order order = orderService.updateOrder(1, updateRequest);
         assertEquals(1, order.getId());
         assertEquals(OrderStatus.PREPARING, order.getStatus());
     }

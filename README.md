@@ -18,3 +18,7 @@ docker run --name myPostgresDb -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRE
 
 ```
 - Run the FoodOrderingApplication.main method
+
+## Tests
+- For the OrderServiceTests you need to have the Postgres running in docker with the given data.sql loaded 
+- The RestaurantServiceTests have a test Postgres container
