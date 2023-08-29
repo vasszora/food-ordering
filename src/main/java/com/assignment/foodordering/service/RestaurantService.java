@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.assignment.foodordering.domain.Item;
 import com.assignment.foodordering.domain.Restaurant;
 import com.assignment.foodordering.exception.RestaurantNotFoundException;
 import com.assignment.foodordering.repository.RestaurantRepository;
@@ -21,5 +22,9 @@ public class RestaurantService {
 
     public Restaurant getRestaurantById(Integer id) {
         return restaurantRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(id));
+    }
+
+    public List<Item> getMenuByRestaurantId(Integer id) {
+        return restaurantRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(id)).getMenu();
     }
 }

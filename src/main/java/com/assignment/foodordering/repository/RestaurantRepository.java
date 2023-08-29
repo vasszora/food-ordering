@@ -11,4 +11,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>
     List<Restaurant> findAll();
 
     Optional<Restaurant> findById(Integer id);
+
+    Restaurant save(Restaurant restaurant);
 }
