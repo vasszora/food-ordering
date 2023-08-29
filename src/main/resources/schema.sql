@@ -1,0 +1,42 @@
+CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE IF NOT EXISTS customer (
+id SERIAL NOT NULL,
+name VARCHAR(255) UNIQUE NOT NULL,
+email VARCHAR(255),
+CONSTRAINT pk_users PRIMARY KEY (id)
+);
+
+CREATE TABLE if NOT EXISTS restaurant (
+id SERIAL NOT NULL,
+name VARCHAR(255) UNIQUE NOT NULL,
+CONSTRAINT pk_restaurant PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS item (
+id SERIAL NOT NULL,
+name VARCHAR(100) UNIQUE NOT NULL,
+price DECIMAL(10,2) NOT NULL,
+restaurant_id INTEGER,
+CONSTRAINT pk_item PRIMARY KEY (id),
+CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurant(id)
+);
+
+CREATE TABLE IF NOT EXISTS orders ( 
+id SERIAL NOT NULL,
+customer_id INTEGER,
+restaurant_id INTEGER,
+status VARCHAR(255) NOT NULL,
+CONSTRAINT pk_order PRIMARY KEY (id),
+CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES customer(id),
+CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurant(id)
+);
+
+CREATE TABLE IF NOT EXISTS ordered_item (
+id SERIAL NOT NULL,
+order_id INTEGER,
+item_id INTEGER,
+CONSTRAINT pk_order_item PRIMARY KEY (id),
+CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(id),
+CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES item(id)
+);
