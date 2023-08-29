@@ -1,11 +1,11 @@
 package com.assignment.foodordering.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.assignment.foodordering.domain.Restaurant;
+import com.assignment.foodordering.exception.RestaurantNotFoundException;
 import com.assignment.foodordering.repository.RestaurantRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class RestaurantService {
         return restaurantRepository.findAll();
     }
 
-    public Optional<Restaurant> getRestaurantById(Integer id) {
-        return restaurantRepository.findById(id);
+    public Restaurant getRestaurantById(Integer id) {
+        return restaurantRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(id));
     }
 }

@@ -3,7 +3,6 @@ package com.assignment.foodordering.controller;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +26,7 @@ public class RestaurantController {
     }
 
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
-    public Optional<Restaurant> getAppointmentById(@PathVariable("id") Integer id) {
+    public Restaurant getAppointmentById(@PathVariable("id") Integer id) {
         return restaurantService.getRestaurantById(id);
     }
 }

@@ -2,7 +2,6 @@ package com.assignment.foodordering.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
@@ -16,11 +15,7 @@ import com.assignment.foodordering.domain.OrderUpdateRequest;
 import com.assignment.foodordering.domain.OrderedItem;
 import com.assignment.foodordering.domain.OrderedItemSaveRequest;
 import com.assignment.foodordering.domain.Restaurant;
-import com.assignment.foodordering.exception.CustomerNotFoundException;
-import com.assignment.foodordering.exception.ItemNotFoundException;
-import com.assignment.foodordering.exception.RestaurantNotFoundException;
-import com.assignment.foodordering.repository.CustomerRepository;
-import com.assignment.foodordering.repository.ItemRepository;
+import com.assignment.foodordering.exception.OrderNotFoundException;
 import com.assignment.foodordering.repository.OrderRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -29,9 +24,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final CustomerRepository customerRepository;
+    private final CustomerService customerService;
     private final RestaurantService restaurantService;
-    private final ItemRepository itemRepository;
+    private final ItemService itemService;
 
     public List<Order> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
@@ -41,52 +36,34 @@ public class OrderService {
         return orders;
     }
 
-    public Optional<Order> getOrderById(Integer id) {
-        Optional<Order> order = orderRepository.findById(id);
-        if (order.isPresent()) {
-            setMenu(order.get());
-        }
+    public Order getOrderById(Integer id) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+        setMenu(order);
         return order;
     }
 
     public Order updateOrder(Integer id, OrderUpdateRequest updateRequest) {
-        Optional<Order> order = orderRepository.findById(id);
+        Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
 
-        if (order.isEmpty()) {
-            throw new ItemNotFoundException(id);
-        }
-
-        order.get().setStatus(updateRequest.getStatus());
-        return orderRepository.save(order.get());
+        order.setStatus(updateRequest.getStatus());
+        return orderRepository.save(order);
     }
 
     public Order createOrder(OrderSaveRequest orderSaveRequest) {
         Order newOrder = new Order();
-        Optional<Customer> customer = customerRepository.findById(orderSaveRequest.getCustomerId());
-        if (customer.isEmpty()) {
-            throw new CustomerNotFoundException(orderSaveRequest.getCustomerId());
-        } else {
-            newOrder.setCustomer(customer.get());
-        }
+        Customer customer = customerService.getCustomerById(orderSaveRequest.getCustomerId());
+        newOrder.setCustomer(customer);
 
-        Optional<Restaurant> restaurant = restaurantService.getRestaurantById(orderSaveRequest.getRestaurantId());
-        if (restaurant.isEmpty()) {
-            throw new RestaurantNotFoundException(orderSaveRequest.getRestaurantId());
-        } else {
-            newOrder.setRestaurant(restaurant.get());
-        }
+        Restaurant restaurant = restaurantService.getRestaurantById(orderSaveRequest.getRestaurantId());
+        newOrder.setRestaurant(restaurant);
 
         List<OrderedItem> orderedItems = new ArrayList<>();
         for (OrderedItemSaveRequest orderedItemRequest : orderSaveRequest.getItems()) {
-            Optional<Item> item = itemRepository.findById(orderedItemRequest.getItemId());
-
-            if (item.isEmpty()) {
-                throw new ItemNotFoundException(orderedItemRequest.getItemId());
-            }
+            Item item = itemService.getItemById(orderedItemRequest.getItemId());
 
             orderedItems.add(
                     new OrderedItem(newOrder,
-                            item.get(),
+                            item,
                             orderedItemRequest.getQuantity(),
                             orderedItemRequest.getSpecialInstructions()));
         }
