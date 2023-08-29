@@ -36,6 +36,11 @@ public class OrderService {
         return orders;
     }
 
+    public List<Order> getOrdersByRestaurantId(Integer restaurantId) {
+        Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+        return orderRepository.findByRestaurant(restaurant);
+    }
+
     public Order getOrderById(Integer id) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
         setMenu(order);
@@ -77,4 +82,5 @@ public class OrderService {
         Hibernate.initialize(order.getItems());
         order.getItems().forEach(orderedItem -> Hibernate.initialize(orderedItem.getItem()));
     }
+
 }
