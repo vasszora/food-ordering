@@ -14,6 +14,4 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Optional<Order> findById(Integer id);
 
     List<Order> findByRestaurant(Restaurant restaurant);
-
-    // TODO path with status
 }
