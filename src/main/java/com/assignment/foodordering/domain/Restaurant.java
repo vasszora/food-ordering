@@ -19,4 +19,6 @@ public class Restaurant {
 
     private Integer id;
     private String name;
+
+    // TODO add menu? list of items that belong to the resto
 }

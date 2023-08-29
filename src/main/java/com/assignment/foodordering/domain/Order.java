@@ -30,11 +30,11 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    private Customer customerId;
+    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
-    private Restaurant restaurantId;
+    private Restaurant restaurant;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
